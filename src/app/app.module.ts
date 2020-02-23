@@ -8,6 +8,7 @@ import { SampleDataService } from './services/sampleData.service';
 import { BannerComponent } from './banner/banner.component';
 import { Banner1Component } from './banner1/banner1.component';
 import { Banner2Component } from './banner2/banner2.component';
+import { Banner3Component } from './banner3/banner3.component';
 
 
 @NgModule({
@@ -16,7 +17,8 @@ import { Banner2Component } from './banner2/banner2.component';
     Test1Component,
     BannerComponent,
     Banner1Component,
-    Banner2Component
+    Banner2Component,
+    Banner3Component
   ],
   imports: [
     BrowserModule,
