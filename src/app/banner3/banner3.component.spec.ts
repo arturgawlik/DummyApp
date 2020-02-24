@@ -1,7 +1,7 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 
 import { Banner3Component } from './banner3.component';
-import { of } from 'rxjs';
+import { of, throwError, defer } from 'rxjs';
 import { TwainService } from '../services/twain.service';
 
 describe('Banner3Component', () => {
@@ -23,7 +23,7 @@ describe('Banner3Component', () => {
         Banner3Component
       ],
       providers: [
-        { provide: TwainService, useValue: getQuoteSpy }
+        { provide: TwainService, useValue: twainService }
       ]
     });
 
@@ -39,4 +39,53 @@ describe('Banner3Component', () => {
     expect(getQuoteSpy.calls.any()).toBe(true, 'getQuote called');
   });
 
+  it('should display error when TwainService fails', fakeAsync(() => {
+    getQuoteSpy.and.returnValue(throwError('TwainService test failure'));
+
+    fixture.detectChanges();
+
+    tick();
+
+    fixture.detectChanges();
+
+    expect(component.errorMessage).toMatch(/test failure/, 'should display error');
+    expect(quoteEl.textContent).toBe('...', 'should how placeholder');
+  }));
+
+  it('should show quote after component init (fakeAsync)', fakeAsync(() => {
+    getQuoteSpy.and.returnValue(asyncData(testQuote));
+    expect(quoteEl.textContent).toBeFalsy();
+    fixture.detectChanges();
+    expect(quoteEl.textContent).toBe('...');
+    tick();
+    fixture.detectChanges();
+    expect(quoteEl.textContent).toBe(testQuote);
+  }));
+
+  it('should show quote afres component init (async)', async(() => {
+    fixture.detectChanges();
+    expect(quoteEl.textContent).toBe('...');
+    fixture.whenStable().then(() => {
+      fixture.detectChanges();
+      expect(quoteEl.textContent).toBe(testQuote);
+    });
+  }));
+
 });
+
+
+
+
+
+/** Create async observable that emits-once and completes
+ *  after a JS engine turn */
+export function asyncData<T>(data: T) {
+  return defer(() => Promise.resolve(data));
+}
+
+
+/** Create async observable error that errors
+ *  after a JS engine turn */
+export function asyncError<T>(errorObject: any) {
+  return defer(() => Promise.reject(errorObject));
+}

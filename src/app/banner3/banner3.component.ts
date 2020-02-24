@@ -16,7 +16,8 @@ export class Banner3Component implements OnInit {
   quote: Observable<string>;
   errorMessage: string;
 
-  constructor(private twainService: TwainService) { }
+  constructor(private twainService: TwainService) {
+  }
 
   ngOnInit(): void {
     this.getQuote();
