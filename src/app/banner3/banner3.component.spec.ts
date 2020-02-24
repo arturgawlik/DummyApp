@@ -63,6 +63,7 @@ describe('Banner3Component', () => {
   }));
 
   it('should show quote afres component init (async)', async(() => {
+    getQuoteSpy.and.returnValue(asyncData(testQuote));
     fixture.detectChanges();
     expect(quoteEl.textContent).toBe('...');
     fixture.whenStable().then(() => {
